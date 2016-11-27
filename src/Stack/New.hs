@@ -139,6 +139,13 @@ loadTemplate name logIt = do
             req <- parseRequest s
             let rel = fromMaybe backupUrlRelPath (parseRelFile s)
             downloadTemplate req (templateDir </> rel)
+        GithubPath user fn -> do
+            let url = concat 
+                [ "https://raw.githubusercontent.com/"
+                , username, "/stack-templates/master/", fn, ".hsfiles"]
+            req <- parseRequest url
+            let rel = fromMaybe backupUrlRelPath (parseRelFile url)
+            downloadTemplate req (templateDir </> rel)
         RelPath relFile ->
             catch
                 (do f <- loadLocalFile relFile

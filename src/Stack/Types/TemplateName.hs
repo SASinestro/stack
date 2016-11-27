@@ -34,6 +34,9 @@ data TemplatePath = AbsPath (Path Abs File)
                   -- the template repository
                   | UrlPath String
                   -- ^ a full URL
+                  | GithubPath String String
+                  -- ^ a username and template name referring to the GitHub
+                  -- user's stack-templates repository
   deriving (Eq, Ord, Show)
 
 instance FromJSON TemplateName where
@@ -81,14 +84,19 @@ parseTemplateNameFromString fname =
   where
     parseValidFile prefix hsf orig = justErr expected
                                            $ asum (validParses prefix hsf orig)
+
+    parseGithubRef = fmap ((\(x, _:y) -> (x, y)) . break (== '/')) . stripPrefix "github:"
+
     validParses prefix hsf orig =
         -- NOTE: order is important
-        [ TemplateName (T.pack orig) . UrlPath <$> (parseRequest orig *> Just orig)
+        [ TemplateName (T.pack orig) . uncurry GithubPath <$> parseGithubRef orig
+        , TemplateName (T.pack orig) . UrlPath <$> (parseRequest orig *> Just orig)
         , TemplateName prefix        . AbsPath <$> parseAbsFile hsf
         , TemplateName prefix        . RelPath <$> parseRelFile hsf
         ]
     expected = "Expected a template like: foo or foo.hsfiles or\
-               \ https://example.com/foo.hsfiles"
+               \ https://example.com/foo.hsfiles or\
+               \ github:username/foo"
 
 -- | Make a template name.
 mkTemplateName :: String -> Q Exp

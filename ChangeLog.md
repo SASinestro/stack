@@ -79,6 +79,8 @@ Other enhancements:
   [#2235](https://github.com/commercialhaskell/stack/issues/2235)
 * Replace enclosed-exceptions with safe-exceptions.
   [#2768](https://github.com/commercialhaskell/stack/issues/2768)
+* `stack new` can access templates in any user's `stack-templates` Github repository with the
+  syntax `github:username/filename`.
 
 Bug fixes:
 

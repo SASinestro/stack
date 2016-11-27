@@ -1919,6 +1919,10 @@ Alternatively you can use your own templates by specifying the path:
 ```
 stack new project ~/location/of/your/template.hsfiles
 ```
+Or a refernce to a Github user's `stack-templates` repository:
+```
+stack new project github:username/template
+```
 
 As a starting point you can use [the "simple" template](https://github.com/commercialhaskell/stack-templates/blob/master/simple.hsfiles).
 An introduction into template-writing and a place for submitting official templates,
